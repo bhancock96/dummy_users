@@ -4,12 +4,36 @@ get '/' do
 end
 
 get '/login' do
+
+  erb :login
 end
 
-post '/logout' do
+post '/login' do 
+
+  valid_user = User.authenticate(params[:email], params[:password])
+  if valid_user
+    session[:id] = valid_user.id
+
+    redirect  '/secret'
+  else
+    redirect '/login'
+  end
 end
 
-get '/create' do
+get '/logout' do
+  session[:id] = nil
+
+  redirect '/login'
+end
+
+post '/created_user' do
+  user = User.create(params[:user])
+  session[:id] = user.id
+  
+  redirect '/secret'
+end
+
+get '/register' do
 
   erb :create_account
 end
